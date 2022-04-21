@@ -7,8 +7,8 @@ module.exports = new Pool({
   database: `${process.env.DB}`,
   username: `${process.env.USER}`,
   password: `${process.env.PW}`,
-  idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 5000,
+  connectionTimeoutMillis: 5000,
 })
 
 
