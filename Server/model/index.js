@@ -15,7 +15,11 @@ const helpfulByProductID = async (reviewID) => {
   const result = await pool.put(`
     UPDATE helpfulness FROM "public".reviews
     SET helpfulness = helpfulness + 1
+<<<<<<< HEAD
     WHERE id = ${reviewID};
+=======
+    WHERE product_id = ${reviewID};
+>>>>>>> 1fd4a848248b1e896f2e0bfae1956e5d9901795c
     `)
     return results;
 }
