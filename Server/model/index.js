@@ -1,7 +1,6 @@
 const pool = require('../../DB/Postgres/index.js');
 
 // Build queries here
-
 const selectReviewsByProductID = async (productID) => {
     console.log(productID)
     const results = await pool.query(`
@@ -11,15 +10,21 @@ const selectReviewsByProductID = async (productID) => {
     return results;
 }
 
+const photosByReviewID = async (reviewID) => {
+  console.log('here', reviewID)
+  const results = await pool.query(`
+    SELECT * FROM "public".reviews_photos
+    WHERE review_id = ${reviewID};
+  `)
+  console.log(results, 'these are results')
+  return results;
+}
+
 const helpfulByProductID = async (reviewID) => {
   const result = await pool.put(`
     UPDATE helpfulness FROM "public".reviews
     SET helpfulness = helpfulness + 1
-<<<<<<< HEAD
-    WHERE id = ${reviewID};
-=======
     WHERE product_id = ${reviewID};
->>>>>>> 1fd4a848248b1e896f2e0bfae1956e5d9901795c
     `)
     return results;
 }
@@ -28,5 +33,6 @@ const helpfulByProductID = async (reviewID) => {
 
 module.exports = {
   selectReviewsByProductID,
-  helpfulByProductID
+  helpfulByProductID,
+  photosByReviewID
 }
