@@ -1,0 +1,6 @@
+Select Reviews by Product ID is fine as-is
+  -Might Need to Join Photos to Review or Nest a Photo Query
+  -Might need to look at recommend
+
+Characteristic by Product ID is fine as-is
+  -Might need to look at recommend
