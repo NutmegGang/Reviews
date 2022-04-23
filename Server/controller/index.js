@@ -67,16 +67,24 @@ const model = require('../model/index.js');
       res.status(500).send(error)
     })
   }
-  // ===== Reviews by Page and Count Selection -----> To-Do
 
   // ===== Handle Sort Reviews -----> To-Do
-
+  const sortedByRating = async (req, res) => {
+    await model.sortByRating(req.params.rating, req.params.productID)
+    .then((response) => {
+      res.send(response.rows)
+    })
+    .catch((error) => {
+      res.status(500).send(error)
+    })
+  }
 
   module.exports = {
+    characteristicValues,
+    characteristicsByID,
+    sortedByRating,
+    reportedReview,
     reviewsByID,
     photosByID,
-    characteristicsByID,
-    characteristicValues,
-    reportedReview,
     helpful
   }

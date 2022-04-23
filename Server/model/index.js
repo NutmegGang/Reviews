@@ -1,11 +1,16 @@
 const pool = require('../../DB/Postgres/index.js');
 
-// ===== Reviews by Product ID
+// ===== Reviews by Product ID ---> Nest the photo information
 const selectReviewsByProductID = async (productID) => {
   const results = await pool.query(`
-    SELECT * FROM "public".reviews
-    WHERE reported IS false
-    AND product_id = ${productID};
+    SELECT *, json_agg(rp) as photos
+    FROM "public".reviews r
+    JOIN "public".reviews_photos rp
+    ON r.id = rp.review_id
+    WHERE r.product_id = ${productID} AND
+    rp.review_id = r.id AND
+    r.reported = false
+    GROUP BY r.id, rp.review_id, rp.id
   `)
   return results;
 }
@@ -45,7 +50,6 @@ const helpfulByProductID = async (review_id) => {
     SET helpfulness = helpfulness + 1
     WHERE id = ${review_id};
     `)
-    console.log(results)
     return results;
 }
 
@@ -62,6 +66,15 @@ const helpfulByProductID = async (review_id) => {
 
 
   // ===== Handle Sort Reviews -----> To-Do
+  const sortByRating = async (rating, productID) => {
+    const results = await pool.query(`
+      SELECT * FROM "public".reviews
+      WHERE rating = ${rating} AND
+      product_id = ${productID} AND
+      reported = false
+    `)
+    return results;
+  }
 
 
 module.exports = {
@@ -70,5 +83,6 @@ module.exports = {
   characteristicsByProdID,
   helpfulByProductID,
   photosByReviewID,
-  reportReviewByID
+  reportReviewByID,
+  sortByRating,
 }
