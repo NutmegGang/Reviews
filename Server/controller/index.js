@@ -12,11 +12,6 @@ const model = require('../model/index.js');
       })
   }
 
-  // Reviews by Page and Count Selection -----> To-Do
-
-
-
-
   // ===== Photos by Review ID
   const photosByID = async (req, res) => {
     await model.photosByReviewID(req.params.review_id)
@@ -50,26 +45,38 @@ const model = require('../model/index.js');
     })
   }
 
-  // ===== Handle Report Review Feature -----> To-Do
-
-  // ===== Handle Sort Reviews -----> To-Do
 
   // ===== Update Helpful Count ----> Not Working Yet
   const helpful = async (req, res) => {
-    await model.helpfulByProductID(req.params.product_id)
+    await model.helpfulByProductID(req.params.review_id)
     .then((response) => {
-      console.log(response, 'this is response')
-      res.send(response.rows);
+      res.status(200).send('Thank you for finding this helpful!');
     })
     .catch((error) => {
       res.status(500).send(error);
     })
   }
 
+  // ===== Handle Report Review Feature -----> To-Do
+  const reportedReview = async (req, res) => {
+    await model.reportReviewByID(req.params.review_id)
+    .then((response) => {
+      res.status(200).send('This review has been reported and will no longer be visible!');
+    })
+    .catch((error) => {
+      res.status(500).send(error)
+    })
+  }
+  // ===== Reviews by Page and Count Selection -----> To-Do
+
+  // ===== Handle Sort Reviews -----> To-Do
+
+
   module.exports = {
     reviewsByID,
     photosByID,
     characteristicsByID,
     characteristicValues,
+    reportedReview,
     helpful
   }

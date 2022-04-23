@@ -2,11 +2,12 @@ const pool = require('../../DB/Postgres/index.js');
 
 // ===== Reviews by Product ID
 const selectReviewsByProductID = async (productID) => {
-    const results = await pool.query(`
-      SELECT * FROM "public".reviews
-      WHERE product_id = ${productID};
-    `)
-    return results;
+  const results = await pool.query(`
+    SELECT * FROM "public".reviews
+    WHERE reported IS false
+    AND product_id = ${productID};
+  `)
+  return results;
 }
 
 // ===== Photos By Review ID
@@ -22,7 +23,7 @@ const photosByReviewID = async (reviewID) => {
 const characteristicsByProdID = async (product_id) => {
   const results = await pool.query(`
     SELECT * FROM "public".characteristics
-    WHERE product_id = ${product_id};
+    WHERE product_id = ${product_id}
   `)
   return results;
 }
@@ -36,22 +37,38 @@ const characteristicValuesByReview = async (review_id) => {
   return results;
 }
 
-
-// ===== Increment Helpfulness -------> Not Done Yet
-const helpfulByProductID = async (reviewID) => {
-  const result = await pool.put(`
-    UPDATE helpfulness FROM "public".reviews
+// ===== Increment Helpfulness
+const helpfulByProductID = async (review_id) => {
+  console.log(review_id)
+  const result = await pool.query(`
+    UPDATE "public".reviews
     SET helpfulness = helpfulness + 1
-    WHERE product_id = ${reviewID};
+    WHERE id = ${review_id};
     `)
+    console.log(results)
     return results;
 }
 
+  // ===== Handle Report Review Feature
+  const reportReviewByID = async (review_id) => {
+    const results = await pool.query(`
+      UPDATE "public".reviews
+      SET reported = true
+      WHERE id = ${review_id}
+    `)
+    return results;
+  }
+
+
+
+  // ===== Handle Sort Reviews -----> To-Do
+
 
 module.exports = {
-  selectReviewsByProductID,
-  helpfulByProductID,
   characteristicValuesByReview,
+  selectReviewsByProductID,
   characteristicsByProdID,
-  photosByReviewID
+  helpfulByProductID,
+  photosByReviewID,
+  reportReviewByID
 }
