@@ -66,7 +66,6 @@ const helpfulByProductID = async (review_id) => {
     return results;
   }
 
-
 module.exports = {
   selectReviewsByProductID,
   characteristicsByProdID,
