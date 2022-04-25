@@ -16,28 +16,36 @@ CREATE TABLE IF NOT EXISTS reviews
     reviewer_name text NOT NULL,
     reviewer_email text NOT NULL,
     response text,
-    helpfulness integer NOT NULL,
+    helpfulness integer,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS reviews_photos
+CREATE TABLE IF NOT EXISTS photos
 (
     id integer NOT NULL,
     review_id integer NOT NULL,
-    url text NOT NULL,
+    url text,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS characteristic_reviews
+CREATE TABLE IF NOT EXISTS meta
 (
     id integer NOT NULL,
+    product_id integer NOT NULL,
+    name text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS meta_data
+(
+    cid integer NOT NULL,
     characteristic_id integer NOT NULL,
     review_id integer NOT NULL,
-    value integer NOT NULL,
-    PRIMARY KEY (id)
+    value text NOT NULL,
+    PRIMARY KEY (cid)
 );
 
-ALTER TABLE IF EXISTS reviews_photos
+ALTER TABLE IF EXISTS photos
     ADD FOREIGN KEY (review_id)
     REFERENCES reviews (id) MATCH SIMPLE
     ON UPDATE NO ACTION
@@ -45,7 +53,15 @@ ALTER TABLE IF EXISTS reviews_photos
     NOT VALID;
 
 
-ALTER TABLE IF EXISTS characteristic_reviews
+ALTER TABLE IF EXISTS meta
+    ADD FOREIGN KEY (id)
+    REFERENCES meta_data (cid) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS meta_data
     ADD FOREIGN KEY (review_id)
     REFERENCES reviews (id) MATCH SIMPLE
     ON UPDATE NO ACTION
