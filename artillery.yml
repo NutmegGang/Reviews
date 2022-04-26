@@ -1,0 +1,11 @@
+config:
+  target: "localhost:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: Sustained load
+scenarios:
+  - name: "Search"
+    flow:
+      - get:
+          url: "/reviews/10"

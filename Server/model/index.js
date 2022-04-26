@@ -4,8 +4,8 @@ const pool = require('../../DB/Postgres/index.js');
 const selectReviewsByProductID = async (productID) => {
   const results = await pool.query(`
     SELECT *, json_agg(rp) as photos
-    FROM "public".reviews r
-    JOIN "public".reviews_photos rp
+    FROM reviews r
+    JOIN photos rp
     ON r.id = rp.review_id
     WHERE r.product_id = ${productID} AND
     rp.review_id = r.id AND
@@ -15,29 +15,16 @@ const selectReviewsByProductID = async (productID) => {
   return results;
 }
 
-// ===== Photos By Review ID
-const photosByReviewID = async (reviewID) => {
-  const results = await pool.query(`
-    SELECT * FROM "public".reviews_photos
-    WHERE review_id = ${reviewID};
-  `)
-  return results;
-}
-
 // ===== Characteristics By Product ID
 const characteristicsByProdID = async (product_id) => {
   const results = await pool.query(`
-    SELECT * FROM "public".characteristics
-    WHERE product_id = ${product_id}
-  `)
-  return results;
-}
-
-// ===== Characteristic Values by Review ID
-const characteristicValuesByReview = async (review_id) => {
-  const results = await pool.query(`
-    SELECT * FROM "public".characteristic_reviews
-    WHERE review_id = ${review_id};
+  SELECT ch.product_id, jsonb_object_agg(ch.name, json_build_object(
+		'id', ch.id, 'value', cd.value) ) AS characteristics
+        FROM meta ch
+        JOIN meta_data cd
+        ON ch.id = cd.cid
+        WHERE product_id = ${product_id}
+		GROUP BY ch.product_id
   `)
   return results;
 }
@@ -46,7 +33,7 @@ const characteristicValuesByReview = async (review_id) => {
 const helpfulByProductID = async (review_id) => {
   console.log(review_id)
   const result = await pool.query(`
-    UPDATE "public".reviews
+    UPDATE reviews
     SET helpfulness = helpfulness + 1
     WHERE id = ${review_id};
     `)
@@ -56,16 +43,14 @@ const helpfulByProductID = async (review_id) => {
   // ===== Handle Report Review Feature
   const reportReviewByID = async (review_id) => {
     const results = await pool.query(`
-      UPDATE "public".reviews
+      UPDATE reviews
       SET reported = true
       WHERE id = ${review_id}
     `)
     return results;
   }
 
-
-
-  // ===== Handle Sort Reviews -----> To-Do
+  // ===== Handle Sort Reviews
   const sortByRating = async (rating, productID) => {
     const results = await pool.query(`
       SELECT * FROM "public".reviews
@@ -76,13 +61,10 @@ const helpfulByProductID = async (review_id) => {
     return results;
   }
 
-
 module.exports = {
-  characteristicValuesByReview,
   selectReviewsByProductID,
   characteristicsByProdID,
   helpfulByProductID,
-  photosByReviewID,
   reportReviewByID,
   sortByRating,
 }

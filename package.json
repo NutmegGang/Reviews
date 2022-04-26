@@ -23,8 +23,13 @@
     "express": "^4.17.3",
     "mongoose": "^6.3.0",
     "morgan": "^1.10.0",
+    "nginx": "^1.0.7",
     "nodemon": "^2.0.15",
     "pg": "^8.7.3",
+    "pm2": "^5.2.0",
     "postgres": "^3.0.6"
+  },
+  "devDependencies": {
+    "artillery": "^2.0.0-14"
   }
 }
