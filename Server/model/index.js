@@ -4,16 +4,12 @@ const pool = require('../../DB/Postgres/index.js');
 const selectReviewsByProductID = async (productID) => {
   const results = await pool.query(`
     SELECT *, json_agg(rp) as photos
-
     FROM reviews r
-
     JOIN photos rp
     ON r.id = rp.review_id
-
     WHERE r.product_id = ${productID} AND
     rp.review_id = r.id AND
     r.reported = false
-
     GROUP BY r.id, rp.review_id, rp.id
   `)
   return results;
@@ -28,7 +24,6 @@ const characteristicsByProdID = async (product_id) => {
         JOIN meta_data cd
         ON ch.id = cd.cid
         WHERE product_id = ${product_id}
-
 		GROUP BY ch.product_id
   `)
   return results;
